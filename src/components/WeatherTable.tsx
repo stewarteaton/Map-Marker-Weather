@@ -37,10 +37,6 @@ export default function BasicTable({weatherData}:Props) {
     const sunRise = `${sunRiseDate.getHours()} : ${('0' + sunRiseDate.getMinutes()).substr(-2)}`;
     const sunSet = `${sunSetDate.getHours()} : ${('0' + sunSetDate.getMinutes()).substr(-2)}`;
 
-    // Hours part from the timestamp
-    // var hours = date.getHours();
-
-
 
   return (
     <TableContainer component={Paper}>
