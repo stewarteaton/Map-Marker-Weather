@@ -52,7 +52,7 @@ input {
     overflow:hidden
 }
 .table_container{
-    margin:1%;
+    margin:1% 1% 1% 0%;
     width: 98%;
 }
 
