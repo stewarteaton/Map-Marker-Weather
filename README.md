@@ -1,7 +1,7 @@
 <h2>Google Maps - Weather Table from Draggable Marker</h2>
 <br/>
 <hr>
-![Alt text](./images/desktop.png?raw=true "Title")
+![alt text](https://github.com/stewarteaton/Map-Marker-Weather/blob/main/images/desktop.png?raw=true)
 
 
 <br/>
