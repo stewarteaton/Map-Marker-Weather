@@ -18,14 +18,16 @@ interface WeatherData {
   data: any
 }
 
-const App: React.VFC = () => {
+const App: React.FC = () => {
   const [zoom, setZoom] = React.useState(6); // initial zoom
   const [center, setCenter] = React.useState<google.maps.LatLngLiteral>({
-    lat: 25.848829675175036,
+    lat: 25.848829675175036,  // initialize to miami
     lng: -80.21877539364475,
   });
   const [markerCoord, setMarkerCoord] = React.useState<google.maps.LatLng>();
   const [weatherData, setWeatherData] = React.useState<WeatherData>();
+  // User Location status
+  const [status, setStatus] = React.useState<string>('');
 
   // Fetch Weather Data when marker moved
   React.useEffect(() => {
@@ -56,12 +58,14 @@ const App: React.VFC = () => {
       </nav>
       <div className='content_container'>
         <div className='map_container'>
+          {status}
           <Wrapper apiKey={config.googleMapsAPI.key} render={render}>
             <Map
               center={center}
-              // onClick={onClick}
               zoom={zoom}
               setMarkerCoord={setMarkerCoord}
+              setCenter={setCenter}
+              setStatus={setStatus}
               style={{ flexGrow: "1", height: "100%" }}
             >
                 <Marker key={1} position={markerCoord ? markerCoord : center} draggable={true} onDragEnd={(e) => onDragMarkerEnd(e)}/>
@@ -70,7 +74,6 @@ const App: React.VFC = () => {
         </div>
         
         <div className='table_container'>
-          {/* {table} */}
           <div style={{width:'100%'}}>
             {weatherData && <WeatherTable weatherData={weatherData}/> }
           </div>

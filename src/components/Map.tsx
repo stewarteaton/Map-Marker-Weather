@@ -5,6 +5,8 @@ import { isLatLngLiteral } from "@googlemaps/typescript-guards";
 interface MapProps extends google.maps.MapOptions {
     style: { [key: string]: string };
     setMarkerCoord: React.Dispatch<React.SetStateAction<google.maps.LatLng | undefined>>
+    setCenter: React.Dispatch<React.SetStateAction<google.maps.LatLngLiteral>>
+    setStatus: React.Dispatch<React.SetStateAction<string>>
   }
   
 
@@ -12,15 +14,19 @@ const Map: React.FC<MapProps> = ({
     children,
     style,
     setMarkerCoord,
+    setCenter,
+    setStatus,
     ...options
   }) => {
     const ref = React.useRef<HTMLDivElement>(null);
     const [map, setMap] = React.useState<google.maps.Map>();
 
-    // Set initial marker coordinate to Miami
+    // Set Map & Marker Coords
     React.useEffect(() => {
+        // initialize marker to Miami
         const x = new google.maps.LatLng(parseFloat('25.76883672477272'), parseFloat('-80.20526242462772'));
         setMarkerCoord(x)
+        getUserLocation() // Set map and marker to user location if possible
     },[])
   
     React.useEffect(() => {
@@ -37,17 +43,30 @@ const Map: React.FC<MapProps> = ({
       }
     }, [map, options]);
   
-    React.useEffect(() => {
-      if (map) {
-        ["click", "idle"].forEach((eventName) =>
-          google.maps.event.clearListeners(map, eventName)
-        );
+    const getUserLocation = () => {
+      if (!navigator.geolocation) {
+        alert('Geolocation is not supported by your browser');
+      } else {
+        alert('Locating your position..');
+        navigator.geolocation.getCurrentPosition((position) => {
+          // setStatus('');
+          const userCoord = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+          setCenter({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          })
+          setMarkerCoord(userCoord)
+        }, () => {
+          alert('Unable to retrieve your location');
+        });
       }
-    }, [map]);
+    }
   
     return (
       <>
         <div ref={ref} style={style} />
+
+        {/* Used for child elements like Marker */}
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child)) {
             // set the map prop on the child component
@@ -61,8 +80,8 @@ const Map: React.FC<MapProps> = ({
 
 export default Map
 
-// Functions //
 
+// Functions //
 function useDeepCompareEffectForMaps(
     callback: React.EffectCallback,
     dependencies: any[]
